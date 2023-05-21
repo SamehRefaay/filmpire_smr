@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
 	AppBar,
 	IconButton,
@@ -8,20 +8,45 @@ import {
 	Avatar,
 	Drawer,
 } from '@mui/material';
+import { AccountCircle, Brightness4, Brightness7 } from '@mui/icons-material';
 import MenuIcon from '@mui/icons-material/Menu';
 import { useTheme } from '@mui/material/styles';
-import { AccountCircle, Brightness4, Brightness7 } from '@mui/icons-material';
-import { Link } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { setUser, authSelector } from '../../features/authentication';
 
-import { SideBar } from '..';
+import { Search, SideBar } from '..';
 import useStyles from './styles';
+import { fetchToken, movieApi, createSessionId } from '../../utils';
 
 function NavBar() {
 	const theme = useTheme();
 	const classes = useStyles();
+	const dispatch = useDispatch();
 	const isMobile = useMediaQuery('(max-width:600px)');
-	const isAuthenticated = true;
+	const { isAuthenticated, user } = useSelector(authSelector);
 	const [mobileOpen, setMobileOpen] = useState(false);
+
+	const token = localStorage.getItem('request_token');
+
+	useEffect(() => {
+		const loginUser = async () => {
+			if (token) {
+				try {
+					const sessionId = localStorage.getItem('session_id')
+						? localStorage.getItem('session_id')
+						: await createSessionId();
+					const { data: userData } = await movieApi.get(
+						`/account?session_id=${sessionId}`
+					);
+					// console.log(userData);
+					dispatch(setUser(userData));
+				} catch (error) {
+					console.log('sorry your data could not be fetched.');
+				}
+			}
+		};
+		loginUser();
+	}, [token]);
 
 	return (
 		<>
@@ -46,17 +71,22 @@ function NavBar() {
 					<IconButton color="inherit" sx={{ ml: 1 }} onClick={() => {}}>
 						{theme.palette.mode === 'dark' ? <Brightness7 /> : <Brightness4 />}
 					</IconButton>
-					{!isMobile && 'Search...'}
+					{!isMobile && <Search />}
 					<div>
 						{!isAuthenticated ? (
-							<Button color="inherit" onClick={() => {}}>
+							<Button
+								color="inherit"
+								onClick={() => {
+									fetchToken();
+								}}
+							>
 								Login &nbsp; <AccountCircle />
 							</Button>
 						) : (
 							<Button
 								LinkComponent="a"
 								color="inherit"
-								href="/profile:id"
+								href={`/profile/:${user.id}`}
 								className={classes.linkButton}
 							>
 								{!isMobile ? (
@@ -70,7 +100,7 @@ function NavBar() {
 							</Button>
 						)}
 					</div>
-					{isMobile && <div>Search...</div>}
+					{isMobile && <Search />}
 				</Toolbar>
 			</AppBar>
 			<div>
