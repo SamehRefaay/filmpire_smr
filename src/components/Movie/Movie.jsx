@@ -6,7 +6,7 @@ import useStyles from './styles';
 function Movie({ movie, index }) {
 	const classes = useStyles();
 	return (
-		<Box>
+		<Box padding="10px 0">
 			<Grid item className={classes.movie}>
 				<Grow in timeout={(index + 1) * 250} key={index}>
 					<Link className={classes.links} to={`/movie/${movie.id}`}>

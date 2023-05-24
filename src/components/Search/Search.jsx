@@ -11,6 +11,7 @@ function Search() {
 	const [query, setQuery] = useState('');
 	const handleKeyPress = e => {
 		if (e.key === 'Enter') {
+			// window.location.href = '/';
 			dispatch(searchMovie(query));
 		}
 	};
