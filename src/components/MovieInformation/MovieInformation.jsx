@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import {
+	Alert,
 	Box,
 	Button,
 	ButtonGroup,
@@ -13,6 +14,7 @@ import {
 import { useDispatch } from 'react-redux';
 import {
 	ArrowBack,
+	Error,
 	Favorite,
 	FavoriteOutlined,
 	Language,
@@ -67,7 +69,7 @@ function MovieInformation() {
 							className={classes.poster}
 							src={
 								data?.poster_path
-									? `https://image.tmdb.org/t/p/w500/${data.poster_path}`
+									? `https://image.tmdb.org/t/p/w500/${data?.poster_path}`
 									: 'noImage'
 							}
 							alt={data?.title}
@@ -150,23 +152,37 @@ function MovieInformation() {
 						<Typography variant="h5" gutterBottom>
 							Top Cast
 						</Typography>
-						<Grid item container justifyContent="space-between" flexWrap="wrap">
+						<Grid
+							item
+							container
+							justifyContent="flex-start"
+							gap="20px"
+							flexWrap="wrap"
+						>
 							{data.credits.cast.slice(0, 6).map(
 								item =>
 									item.profile_path && (
 										<Box key={item.name} borderRadius="10px" maxWidth="100px">
-											<img
-												src={`https://image.tmdb.org/t/p/w500/${item.profile_path}`}
-												alt={item.name}
-												className={classes.castImages}
-											/>
-											<Typography
-												variant="subtitle1"
-												textAlign="center"
-												maxWidth="100%"
+											,
+											<Link
+												to={`/actors/${item.id}`}
+												className={classes.actorLink}
 											>
-												{item.name}
-											</Typography>
+												<img
+													src={`https://image.tmdb.org/t/p/w500/${item?.profile_path}`}
+													alt={item.name}
+													className={classes.castImages}
+												/>
+
+												<Typography
+													className={classes.actorName}
+													variant="subtitle1"
+													maxWidth="100%"
+													color="text.primary"
+												>
+													{item.name}
+												</Typography>
+											</Link>
 											<Typography
 												variant="subtitle2"
 												textAlign="center"
@@ -260,20 +276,24 @@ function MovieInformation() {
 					setOpen(false);
 				}}
 			>
-				{data?.videos?.results?.length > 0 && (
+				{data?.videos?.results?.length > 0 ? (
 					<iframe
 						autoPlay
 						allow="autoplay"
 						className={classes.video}
 						title="Trailer"
-						src={`https://www.youtube.com/embed/${data.videos.results[0].key}`}
+						src={`https://www.youtube.com/embed/${data?.videos?.results[0]?.key}`}
 					/>
+				) : (
+					<Alert icon={<Error />} Error className={classes.video}>
+						Sorry, there are no trailer found for this movie.
+					</Alert>
 				)}
 			</Modal>
 		</>
 	);
 }
 
-/* `https://image.tmdb.org/t/p/w500/${character.profile_path}` */
+/* `https://image.tmdb.org/t/p/w500/${character.?profile_path}` */
 
 export default MovieInformation;

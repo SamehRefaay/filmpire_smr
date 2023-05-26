@@ -23,6 +23,16 @@ export default makeStyles(theme => ({
 	genresIcons: {
 		filter: theme.palette.mode === 'dark' && 'invert(1)',
 	},
+	actorLink: {
+		textDecoration: 'none',
+		'&:hover': {
+			textDecoration: 'underline',
+		},
+	},
+	actorName: {
+		textAlign: 'center',
+		fontWeight: 'bold',
+	},
 	castImages: {
 		maxWidth: '100%',
 		borderRadius: '10px',

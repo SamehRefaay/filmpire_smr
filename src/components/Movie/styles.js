@@ -1,9 +1,7 @@
 import { makeStyles } from '@mui/styles';
 
 export default makeStyles(theme => ({
-	movie: {
-		// padding: '10px',
-	},
+	movie: {},
 	links: {
 		alignItems: 'center',
 		fontWeight: 'bolder',
@@ -18,7 +16,7 @@ export default makeStyles(theme => ({
 	},
 	image: {
 		borderRadius: '20px',
-		height: '300px',
+		maxWidth: '100%',
 		marginBottom: '10px',
 		transition: '0.3s',
 		// maxWidth: '100%',
