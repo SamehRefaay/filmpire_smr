@@ -38,3 +38,45 @@ export const createSessionId = async () => {
 	}
 	return sessionId;
 };
+
+// add or remove movie to favorite list
+export const addMovieToFavorite = async (
+	account_id,
+	mediaId,
+	isMovieFavorited
+) => {
+	const session_id = localStorage.getItem('session_id');
+	try {
+		await movieApi.post(
+			`account/${account_id}/favorite?session_id=${session_id}`,
+			{
+				media_type: 'movie',
+				media_id: mediaId,
+				favorite: !isMovieFavorited,
+			}
+		);
+	} catch (error) {
+		console.log('sorry your movie did not added successfully to Favorite List');
+	}
+};
+
+// add or remove movie to watchlist list
+export const addMovieToWatchlist = async (
+	account_id,
+	mediaId,
+	isMovieWatchListed
+) => {
+	const session_id = localStorage.getItem('session_id');
+	try {
+		await movieApi.post(
+			`account/${account_id}/watchlist?session_id=${session_id}`,
+			{
+				media_type: 'movie',
+				media_id: mediaId,
+				watchlist: !isMovieWatchListed,
+			}
+		);
+	} catch (error) {
+		console.log('sorry your movie did not added successfully to watch List');
+	}
+};

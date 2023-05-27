@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import {
 	Alert,
@@ -11,17 +11,18 @@ import {
 	Rating,
 	Typography,
 } from '@mui/material';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {
 	ArrowBack,
 	Error,
 	Favorite,
-	FavoriteOutlined,
+	FavoriteBorder,
 	Language,
 	Movie,
 	Theaters,
 } from '@mui/icons-material';
 import {
+	useGetListQuery,
 	useGetMovieDetailsQuery,
 	useGetRecommendationsMoviesQuery,
 } from '../../services/TMDB';
@@ -29,20 +30,59 @@ import useStyles from './styles';
 import genresIcons from '../../assets/genres and categories';
 import { selectGenreOrCategory } from '../../features/currentGenreOrCategory';
 import MoviesList from '../MoviesList/MoviesList';
+import { addMovieToFavorite, addMovieToWatchlist } from '../../utils';
+import { authSelector } from '../../features/authentication';
 
 function MovieInformation() {
 	const { id } = useParams();
+	const { user } = useSelector(authSelector);
 	const classes = useStyles();
 	const dispatch = useDispatch();
 	const [open, setOpen] = useState(false);
-	const isFavorite = false;
-	const isWatchListed = false;
+	const [isMovieFavorited, setIsMovieFavorited] = useState(false);
+	const [isMovieWatchListed, setIsMovieWatchListed] = useState(false);
+
 	const { data, isFetching, error } = useGetMovieDetailsQuery(id);
 	const {
 		data: recommendationsData,
 		isFatching: recommendationFetching,
 		error: recommendationError,
 	} = useGetRecommendationsMoviesQuery(id);
+
+	const { data: favoriteListMovies } = useGetListQuery({
+		accountId: user.id,
+		listName: 'favorite/movies',
+		sessionId: localStorage.getItem('session_id'),
+		page: 1,
+	});
+
+	const { data: watchListMovies } = useGetListQuery({
+		accountId: user.id,
+		listName: 'watchlist/movies',
+		sessionId: localStorage.getItem('session_id'),
+		page: 1,
+	});
+
+	useEffect(() => {
+		setIsMovieFavorited(
+			!!favoriteListMovies?.results?.find(movie => movie?.id === data?.id)
+		);
+	}, [favoriteListMovies, data]);
+
+	useEffect(() => {
+		setIsMovieWatchListed(
+			!!watchListMovies?.results?.find(movie => movie?.id === data?.id)
+		);
+	}, [watchListMovies, data]);
+
+	const toggleFavorite = async () => {
+		await addMovieToFavorite(user.id, id, isMovieFavorited);
+		setIsMovieFavorited(prev => !prev);
+	};
+	const toggleWatchlisted = async () => {
+		await addMovieToWatchlist(user.id, id, isMovieFavorited);
+		setIsMovieWatchListed(prev => !prev);
+	};
 
 	if (isFetching) {
 		return (
@@ -228,13 +268,13 @@ function MovieInformation() {
 						<Grid item>
 							<ButtonGroup variant="outlined" size="medium">
 								<Button
-									onClick={() => {}}
-									endIcon={isFavorite ? <Favorite /> : <FavoriteOutlined />}
+									onClick={toggleFavorite}
+									endIcon={isMovieFavorited ? <Favorite /> : <FavoriteBorder />}
 								>
-									{isFavorite ? 'Un Favorite' : 'Favorite'}
+									{isMovieFavorited ? 'Un Favorite' : 'Favorite'}
 								</Button>
-								<Button onClick={() => {}}>
-									{isWatchListed ? 'Watchlist -' : 'Watchlist + 1'}
+								<Button onClick={toggleWatchlisted}>
+									{isMovieWatchListed ? 'Watchlist -' : 'Watchlist + 1'}
 								</Button>
 								<Button href="/" endIcon={<ArrowBack />}>
 									back
@@ -293,7 +333,5 @@ function MovieInformation() {
 		</>
 	);
 }
-
-/* `https://image.tmdb.org/t/p/w500/${character.?profile_path}` */
 
 export default MovieInformation;
