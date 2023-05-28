@@ -1,6 +1,6 @@
 import { makeStyles } from '@mui/styles';
 
-export default makeStyles(() => ({
+export default makeStyles(theme => ({
 	imageLink: {
 		display: 'flex',
 		justifyContent: 'center',
@@ -12,5 +12,6 @@ export default makeStyles(() => ({
 	icons: {
 		width: '30px',
 		height: '30px',
+		filter: theme.palette.mode === 'dark' && 'invert(1)',
 	},
 }));

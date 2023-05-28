@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useTheme } from '@mui/styles';
 
 import {
@@ -32,6 +32,7 @@ const demoCategories = [
 ];
 
 function SideBar({ setMobileOpen }) {
+	const navigate = useNavigate();
 	const theme = useTheme();
 	const classes = useStyles();
 	const { data, isFetching } = useGetGenresQuery();
@@ -53,7 +54,12 @@ function SideBar({ setMobileOpen }) {
 						<ListItemButton
 							className={classes.links}
 							onClick={() => {
-								console.log(value);
+								if (
+									window.location.href !== '/' ||
+									window.location.href !== '/approved'
+								) {
+									navigate('/');
+								}
 								dispatch(selectGenreOrCategory(value));
 							}}
 						>
@@ -81,7 +87,16 @@ function SideBar({ setMobileOpen }) {
 						<ListItem key={id}>
 							<ListItemButton
 								className={classes.links}
-								onClick={() => dispatch(selectGenreOrCategory(id))}
+								onClick={() => {
+									console.log(name, id);
+									if (
+										window.location.href !== '/' ||
+										window.location.href !== '/approved'
+									) {
+										navigate('/');
+									}
+									dispatch(selectGenreOrCategory(id));
+								}}
 							>
 								<ListItemIcon>
 									<img

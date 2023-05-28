@@ -35,7 +35,7 @@ import { authSelector } from '../../features/authentication';
 
 function MovieInformation() {
 	const { id } = useParams();
-	const { user } = useSelector(authSelector);
+	const { user, isAuthenticated } = useSelector(authSelector);
 	const classes = useStyles();
 	const dispatch = useDispatch();
 	const [open, setOpen] = useState(false);
@@ -49,19 +49,25 @@ function MovieInformation() {
 		error: recommendationError,
 	} = useGetRecommendationsMoviesQuery(id);
 
-	const { data: favoriteListMovies } = useGetListQuery({
-		accountId: user.id,
-		listName: 'favorite/movies',
-		sessionId: localStorage.getItem('session_id'),
-		page: 1,
-	});
+	const { data: favoriteListMovies, refetch: refetchFavorite } =
+		useGetListQuery({
+			accountId: user.id,
+			listName: 'favorite/movies',
+			sessionId: localStorage.getItem('session_id'),
+			page: 1,
+		});
 
-	const { data: watchListMovies } = useGetListQuery({
+	const { data: watchListMovies, refetch: refetchWatchlist } = useGetListQuery({
 		accountId: user.id,
 		listName: 'watchlist/movies',
 		sessionId: localStorage.getItem('session_id'),
 		page: 1,
 	});
+
+	useEffect(() => {
+		refetchFavorite();
+		refetchWatchlist();
+	}, []);
 
 	useEffect(() => {
 		setIsMovieFavorited(
@@ -76,12 +82,20 @@ function MovieInformation() {
 	}, [watchListMovies, data]);
 
 	const toggleFavorite = async () => {
-		await addMovieToFavorite(user.id, id, isMovieFavorited);
-		setIsMovieFavorited(prev => !prev);
+		if (isAuthenticated) {
+			await addMovieToFavorite(user.id, id, isMovieFavorited);
+			setIsMovieFavorited(prev => !prev);
+		} else {
+			alert('Please Login to be able to add movie to your favorites');
+		}
 	};
 	const toggleWatchlisted = async () => {
-		await addMovieToWatchlist(user.id, id, isMovieFavorited);
-		setIsMovieWatchListed(prev => !prev);
+		if (isAuthenticated) {
+			await addMovieToWatchlist(user.id, id, isMovieFavorited);
+			setIsMovieWatchListed(prev => !prev);
+		} else {
+			alert('Please Login to be able to add movie to your watchlist');
+		}
 	};
 
 	if (isFetching) {

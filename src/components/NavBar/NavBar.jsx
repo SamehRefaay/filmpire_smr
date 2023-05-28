@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import {
 	AppBar,
 	IconButton,
@@ -12,6 +12,7 @@ import { AccountCircle, Brightness4, Brightness7 } from '@mui/icons-material';
 import MenuIcon from '@mui/icons-material/Menu';
 import { useTheme } from '@mui/material/styles';
 import { useDispatch, useSelector } from 'react-redux';
+import { ColorModeContext } from '../../utils/ToggleColorMode';
 import { setUser, authSelector } from '../../features/authentication';
 
 import { Search, SideBar } from '..';
@@ -27,6 +28,8 @@ function NavBar() {
 	const [mobileOpen, setMobileOpen] = useState(false);
 
 	const token = localStorage.getItem('request_token');
+
+	const { toggleColorMode } = useContext(ColorModeContext);
 
 	useEffect(() => {
 		const loginUser = async () => {
@@ -68,7 +71,7 @@ function NavBar() {
 							<MenuIcon />
 						</IconButton>
 					)}
-					<IconButton color="inherit" sx={{ ml: 1 }} onClick={() => {}}>
+					<IconButton color="inherit" sx={{ ml: 1 }} onClick={toggleColorMode}>
 						{theme.palette.mode === 'dark' ? <Brightness7 /> : <Brightness4 />}
 					</IconButton>
 					{!isMobile && <Search />}

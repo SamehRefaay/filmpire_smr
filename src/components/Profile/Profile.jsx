@@ -1,5 +1,5 @@
 import { Box, Button, Divider, Typography } from '@mui/material';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { Logout } from '@mui/icons-material';
 import { authSelector } from '../../features/authentication';
@@ -14,19 +14,24 @@ function Profile() {
 		window.location.href = '/';
 	};
 
-	const { data: favoriteMovies } = useGetListQuery({
+	const { data: favoriteMovies, refetch: favoriteRefetch } = useGetListQuery({
 		accountId: user.id,
 		listName: 'favorite/movies',
 		sessionId: localStorage.getItem('session_id'),
 		page: 1,
 	});
 
-	const { data: watchListMovies } = useGetListQuery({
+	const { data: watchListMovies, refetch: watchlistRefetch } = useGetListQuery({
 		accountId: user.id,
 		listName: 'watchlist/movies',
 		sessionId: localStorage.getItem('session_id'),
 		page: 1,
 	});
+
+	useEffect(() => {
+		favoriteRefetch();
+		watchlistRefetch();
+	}, []);
 
 	return (
 		<Box>
