@@ -209,15 +209,20 @@ function MovieInformation() {
 						<Grid
 							item
 							container
-							justifyContent="flex-start"
-							gap="20px"
+							spacing={1}
+							justifyContent="space-between"
 							flexWrap="wrap"
 						>
 							{data.credits.cast.slice(0, 6).map(
 								item =>
 									item.profile_path && (
-										<Box key={item.name} borderRadius="10px" maxWidth="100px">
-											,
+										<Grid
+											item
+											xs={4}
+											lg={2}
+											key={item.name}
+											borderRadius="10px"
+										>
 											<Link
 												to={`/actors/${item.id}`}
 												className={classes.actorLink}
@@ -244,7 +249,7 @@ function MovieInformation() {
 											>
 												{item.character}
 											</Typography>
-										</Box>
+										</Grid>
 									)
 							)}
 						</Grid>
@@ -317,7 +322,7 @@ function MovieInformation() {
 					)}
 					{recommendationsData && (
 						<Box width="100%">
-							<MoviesList movies={recommendationsData} />
+							<MoviesList movies={recommendationsData} numberOfMovies={12} />
 						</Box>
 					)}
 				</>

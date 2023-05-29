@@ -92,14 +92,13 @@ function NavBar() {
 								href={`/profile/:${user.id}`}
 								className={classes.linkButton}
 							>
-								{!isMobile ? (
-									<>
-										My Movies &nbsp;
-										<Avatar src="https://cdn-icons-png.flaticon.com/512/727/727399.png?w=740&t=st=1684113235~exp=1684113835~hmac=93c969dc4c4b0faae588815989d176de37a275897e6378612c2227d5e7e1d5bb" />
-									</>
-								) : (
-									<Avatar src="https://cdn-icons-png.flaticon.com/512/727/727399.png?w=740&t=st=1684113235~exp=1684113835~hmac=93c969dc4c4b0faae588815989d176de37a275897e6378612c2227d5e7e1d5bb" />
-								)}
+								{!isMobile && <>My Movies &nbsp;</>}
+
+								<Avatar
+									src={`https://www.themoviedb.org/t/p/w64_and_h64_face${user?.avatar?.tmdb?.avatar_path}`}
+								/>
+
+								{/* <Avatar src="https://cdn-icons-png.flaticon.com/512/727/727399.png?w=740&t=st=1684113235~exp=1684113835~hmac=93c969dc4c4b0faae588815989d176de37a275897e6378612c2227d5e7e1d5bb" /> */}
 							</Button>
 						)}
 					</div>

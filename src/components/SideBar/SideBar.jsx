@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useTheme } from '@mui/styles';
 
@@ -14,7 +14,7 @@ import {
 	ListSubheader,
 } from '@mui/material';
 
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { selectGenreOrCategory } from '../../features/currentGenreOrCategory';
 import useStyles from './styles';
 import { useGetGenresQuery } from '../../services/TMDB';
@@ -32,11 +32,19 @@ const demoCategories = [
 ];
 
 function SideBar({ setMobileOpen }) {
+	const { genreIdOrCategoryName } = useSelector(
+		state => state.currentGenreOrCategory
+	);
 	const navigate = useNavigate();
 	const theme = useTheme();
 	const classes = useStyles();
 	const { data, isFetching } = useGetGenresQuery();
 	const dispatch = useDispatch();
+
+	useEffect(() => {
+		setMobileOpen(false);
+	}, [genreIdOrCategoryName]);
+
 	return (
 		<>
 			<Link to="/" className={classes.imageLink}>

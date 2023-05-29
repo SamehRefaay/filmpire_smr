@@ -35,7 +35,8 @@ export default makeStyles(theme => ({
 	},
 	castImages: {
 		maxWidth: '100%',
-		borderRadius: '10px',
+		// height: '150px',
+		borderRadius: '8px',
 	},
 	modal: {
 		display: 'flex',

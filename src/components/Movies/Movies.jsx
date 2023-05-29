@@ -7,8 +7,7 @@ import {
 } from '@mui/material';
 import { useSelector } from 'react-redux';
 import { useGetMoviesQuery } from '../../services/TMDB';
-import { selectGenreOrCategory } from '../../features/currentGenreOrCategory';
-import { MoviesList, Pagination } from '..';
+import { FeaturedMovie, MoviesList, Pagination } from '..';
 
 function Movies() {
 	const [page, setPage] = useState(1);
@@ -48,7 +47,8 @@ function Movies() {
 
 	return (
 		<Box>
-			<MoviesList movies={data} numberOfMovies={lg ? 18 : 12} />
+			<FeaturedMovie movie={data.results[0]} />
+			<MoviesList movies={data} numberOfMovies={lg ? 17 : 19} excludeFirst />
 			<Pagination
 				currentPage={page}
 				setPage={setPage}
